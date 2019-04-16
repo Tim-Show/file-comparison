@@ -52,11 +52,15 @@ void scan_file(char *pdir,int depth,int fd)
 			
 			char *buf=(char *)malloc(sizeof(char)*1024);
 			memset(buf,'0',1024);	
-			strncpy(buf,dp->d_name,strlen(dp->d_name));
-			strncpy(buf+strlen(dp->d_name),"    ",4);
+			char *path=getcwd(NULL,0);
+			printf("path %s\n",path);
+			strncpy(buf,path,strlen(path));
+			strncpy(buf+strlen(path),"/",1);
+			strncpy(buf+strlen(path)+1,dp->d_name,strlen(dp->d_name));
+			strncpy(buf+strlen(path)+1+strlen(dp->d_name),"    ",4);
 			Compute_file_md5(dp->d_name,md5_str);
-			strcpy(buf+(strlen(dp->d_name)+4),md5_str);
-			strcpy(buf+(strlen(dp->d_name)+4+strlen(md5_str)),"\n");
+			strcpy(buf+(strlen(dp->d_name)+4+strlen(path)+1),md5_str);
+			strcpy(buf+(strlen(dp->d_name)+4+strlen(md5_str)+strlen(path)+1),"\n");
 			int ret=write(fd,buf,strlen(buf));
 		//	printf("%*s%s   ",depth,"",dp->d_name);
 		//	printf("%s\n",md5_str);
