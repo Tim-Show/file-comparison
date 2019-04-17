@@ -43,9 +43,7 @@ int main()
 		buf=str;
 		str=NULL;
 		strncpy(key_string,buf,num);
-		strncpy(key_string+num,"\n",1);
 		strncpy(md5_string,buf+4+num,32);
-		strncpy(md5_string+32,"\n",1);
 
 		htSet(key_string,md5_string,item);
 		num=0;
@@ -84,9 +82,8 @@ int main()
 			printf("old done %s %s\n",tmp->key_string,tmp->md5);
 		}
 		else{
-			printf("com %d ",strncmp(md5_string,tmp->md5,32));
+	//	printf("com %d ",strncmp(md5_string,tmp->md5,32));
 			}
-		printf("count %d\n",count);
 		num=0;
 		memset(buf,0,1024);
 		memset(key_string,0,512);

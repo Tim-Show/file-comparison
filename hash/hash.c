@@ -21,8 +21,8 @@ htItem* htGet(char *key ,htItem **ht){
     	
 	while (item)
     	{
-			printf("key:%s %s\n",key,item->key_string);
-        if (strncmp(key,item->key_string,strlen(key)) == 0){
+			//printf("key:%s %s\n",key,item->key_string);
+        if (strncmp(key,item->key_string,item->key_len) == 0){
             return item;
         }
         item = item->next;
