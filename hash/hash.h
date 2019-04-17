@@ -6,21 +6,25 @@
 #include <string.h>
 #define HASH_TABLE_CAPACITY 20
 
-typedef char*  string;
+#define string char*  
+#define MD5_LEN 33
+typedef unsigned int uint;
 
 /** hash table element*/
 typedef struct _htItem{
     struct _htItem  *next;
     char *key_string;
     string md5;
-
+    uint fid;	
+    uint key_len;
+    uint md5_len;
 } htItem;
 
 /** init the hashTable 构造函数，申请哈希表的空间*/
-void htInit(htItem **ht, int length);
+void htInit(htItem **ht, uint length);
 
 /** set hashTable element 哈希表中插入一个值*/
-string htSet(char *key, uint val, htItem **ht);
+uint htSet(char *key, string md5, htItem **ht);
 
 /** get element from hashtable 从哈希表中获得一个对应的key*/
 htItem* htGet(char *key, htItem **ht);

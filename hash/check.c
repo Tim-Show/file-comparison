@@ -9,30 +9,96 @@
 
 int main()
 {
+
+   	htItem *item[200];
+	htInit(item, 200);
 	char *buf=(char*)malloc(sizeof(char)*1024);
+	char *key_string=(char*)malloc(sizeof(char)*512);
+	char *md5_string=(char*)malloc(sizeof(char)*33);
 	size_t len=1024;
 	if(buf==NULL)
 		return -1;
 
-	FILE* stream=fopen("./bootmd5.txt",O_RDONLY);
+	FILE* stream=fopen("bootmd5.txt","r+");
 	if(stream==NULL)
 		return -1;
 	size_t read;
 
-	memset(buf,'\0',len);
+	memset(buf,0,len);
+
+	memset(key_string,0,512);
+	memset(md5_string,0,33);
 	int count=0;
-	int num=0;
-	while((read=getline(buf,&len,stream))!=-1){
+	unsigned int num=0;
+	char *str=NULL;
+	while((read=getline(&buf,&len,stream))!=-1){
 		count++;
-		printf("%d: %s\n",count,buf);
 		
+		str=buf;
+		while((*buf)!=' ')
+		{
+			num++;
+			buf++;
+		}
+		buf=str;
+		str=NULL;
+		strncpy(key_string,buf,num);
+		strncpy(key_string+num,"\n",1);
+		strncpy(md5_string,buf+4+num,32);
+		strncpy(md5_string+32,"\n",1);
+
+		htSet(key_string,md5_string,item);
+		num=0;
+		memset(buf,0,1024);
+		memset(key_string,0,512);
+		memset(md5_string,0,33);
 	}	
+	fclose(stream);
 
-    htItem *item[300];
-    htInit(item, 300);
+	//print_hashTable(item);
+
+	printf("Geting ....\n");
+
+	count=0;
+	FILE* check_stream=fopen("boot.txt","r+");
+	while((read=getline(&buf,&len,check_stream))!=-1){
+		count++;
+		
+		str=buf;
+		while((*buf)!=' ')
+		{
+			num++;
+			buf++;
+		}
+		buf=str;
+		str=NULL;
+		strncpy(key_string,buf,num);
+		strcpy(md5_string,buf+4+num);
+		
+		htItem *tmp=htGet(key_string,item);
+		if(tmp==NULL)
+			printf("diff fialed\n");
+		if(strncmp(md5_string,tmp->md5,32)!=0)
+		{
+			printf("now done %s %s",key_string,md5_string);
+			printf("old done %s %s\n",tmp->key_string,tmp->md5);
+		}
+		else{
+			printf("com %d ",strncmp(md5_string,tmp->md5,32));
+			}
+		printf("count %d\n",count);
+		num=0;
+		memset(buf,0,1024);
+		memset(key_string,0,512);
+		memset(md5_string,0,33);	
+	}
+
 	
+	//printf("get done %s %s\n",tmp->key_string,tmp->md5);		
 
-		
-		
-
+	free(buf);
+	free(key_string);
+	free(md5_string);
+	free(str);	
+	return 0;
 }

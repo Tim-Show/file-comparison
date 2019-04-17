@@ -5,36 +5,42 @@ void htInit(htItem **ht, uint length){
     int i;
     for (i = 0; i<length; i++){
         ht[i] = (htItem*)malloc(sizeof(htItem));
+		ht[i]->md5 =(char *)malloc(MD5_LEN);
+		ht[i]->key_string =(char *)malloc(24);
+        memset(ht[i]->md5, 0, MD5_LEN);
+		memset(ht[i]->key_string, 0, 24);
         memset(ht[i], 0, sizeof(htItem));
     }
-    ht[0]->fid = length;
+	ht[0]->fid=length;
 }
 
 /** get hashTable elements 进行对应的hash值的搜索，如果找到则返回该节点*/
-htItem* htGet(char *key, htItem **ht){
-    uint i = htIndex(key, ht);
-    htItem *item = ht[i]->next;
-    htItem *tmp = (htItem*)malloc(sizeof(htItem));
-    memset(tmp, 0, sizeof(htItem));
-    while (item)
-    {
-        if (strcmp(key, item->key_string) == 0){
+htItem* htGet(char *key ,htItem **ht){
+   	 uint i = htIndex(key, ht);
+    	htItem *item = ht[i]->next;
+    	
+	while (item)
+    	{
+			printf("key:%s %s\n",key,item->key_string);
+        if (strncmp(key,item->key_string,strlen(key)) == 0){
             return item;
         }
         item = item->next;
+
     }
+	
     return NULL;
 }
 
 /** set hashTable element 插入新的hash值*/
-uint htSet(char *key, uint fid, htItem **ht){
-    uint i = htIndex(key, ht);
+uint htSet(char *key, string md5, htItem **ht){
+    unsigned int i = htIndex(key, ht);
     htItem *item = ht[i];
     while (item->next)
     {
     //已经存在的话则直接更新值
         if (strcmp(key, item->next->key_string) == 0){
-            item->next->fid = fid;
+            item->next->md5 = md5;
             return 0;
         }
         else{
@@ -42,8 +48,18 @@ uint htSet(char *key, uint fid, htItem **ht){
         }
     }
     item->next = (htItem*)malloc(sizeof(htItem));
-    item->next->fid = fid;
-    item->next->key_string = key;
+	item->next->md5=(string)malloc(MD5_LEN);
+	item->next->md5_len=32;
+
+	item->next->key_string=(string)malloc(strlen(key));
+	item->next->key_len=strlen(key);
+
+	memset(item->next->key_string,0,strlen(key));
+	memset(item->next->md5,0,MD5_LEN);
+
+    strncpy(item->next->md5,md5,32);
+    strncpy(item->next->key_string,key,strlen(key));
+
     item->next->next = NULL;
     return 0;
 }
@@ -56,6 +72,7 @@ int htDel(char *key, htItem **ht){
         if (strcmp(key, item->next->key_string) == 0){
             htItem *tmp = item->next;
             item->next = tmp->next;
+			free(tmp->md5);
             free(tmp);
             return 0;
         }
@@ -111,7 +128,7 @@ void print_hashTable(htItem **ht)
         item = ht[i]->next;
         while (item)
         {
-            printf("%s => %d\n", item->key_string, item->fid);
+            printf("%d:%s => %s %d\n", i,item->key_string, item->md5,item->key_len);
             item = item->next;
         }
     }
