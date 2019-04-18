@@ -7,8 +7,13 @@
 #include<sys/stat.h>
 #include<fcntl.h>
 
-int main()
+int main(int argc,char *argv[])
 {
+	if(argc<2)
+	{
+		printf("input two argc");
+		return 0;
+	}
 
    	htItem *item[2000];
 	htInit(item, 2000);
@@ -19,7 +24,7 @@ int main()
 	if(buf==NULL)
 		return -1;
 
-	FILE* stream=fopen("bootmd5.txt","r+");
+	FILE* stream=fopen(argv[1],"r+");
 	if(stream==NULL)
 		return -1;
 	size_t read;
@@ -57,7 +62,7 @@ int main()
 	printf("Geting ....\n");
 
 	count=0;
-	FILE* check_stream=fopen("boot.txt","r+");
+	FILE* check_stream=fopen(argv[2],"r+");
 	while((read=getline(&buf,&len,check_stream))!=-1){
 		count++;
 		
