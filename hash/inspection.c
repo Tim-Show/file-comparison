@@ -10,8 +10,8 @@
 int main()
 {
 
-   	htItem *item[200];
-	htInit(item, 200);
+   	htItem *item[2000];
+	htInit(item, 2000);
 	char *buf=(char*)malloc(sizeof(char)*1024);
 	char *key_string=(char*)malloc(sizeof(char)*512);
 	char *md5_string=(char*)malloc(sizeof(char)*33);
@@ -53,7 +53,6 @@ int main()
 	}	
 	fclose(stream);
 
-	//print_hashTable(item);
 
 	printf("Geting ....\n");
 
@@ -75,14 +74,16 @@ int main()
 		
 		htItem *tmp=htGet(key_string,item);
 		if(tmp==NULL)
-			printf("diff fialed\n");
+		{	
+			printf("old system haven't the %s file\n",key_string);
+			return 0;
+		};
 		if(strncmp(md5_string,tmp->md5,32)!=0)
 		{
 			printf("now done %s %s",key_string,md5_string);
 			printf("old done %s %s\n",tmp->key_string,tmp->md5);
 		}
 		else{
-	//	printf("com %d ",strncmp(md5_string,tmp->md5,32));
 			}
 		num=0;
 		memset(buf,0,1024);
@@ -90,8 +91,7 @@ int main()
 		memset(md5_string,0,33);	
 	}
 
-	
-	//printf("get done %s %s\n",tmp->key_string,tmp->md5);		
+	fclose(check_stream);	
 
 	free(buf);
 	free(key_string);
