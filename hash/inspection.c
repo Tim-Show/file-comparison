@@ -15,8 +15,8 @@ int main(int argc,char *argv[])
 		return 0;
 	}
 
-   	htItem *item[2000];
-	htInit(item, 2000);
+   	htItem *item[1000];
+	htInit(item, 1000);
 	char *buf=(char*)malloc(sizeof(char)*1024);
 	char *key_string=(char*)malloc(sizeof(char)*512);
 	char *md5_string=(char*)malloc(sizeof(char)*33);
